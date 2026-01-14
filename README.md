@@ -1,117 +1,14 @@
-# Arcane Warding Module for Foundry VTT
-
-A Foundry VTT module that automates the Abjurer wizard's Arcane Ward feature from D&D5e 2014 and 2024.
-
-## General philosophy around the feature and why this module was created
-
-According to RAW, the caster can choose to activate the ward when casting an Abjuration spell, it is not automatic. Most modules just assume that the player will only use this in combat, so it is applied automatically. If the player is in town for example, and they want to use Arcane Lock on their room door, well, now they are walking around with an Arcane Ward on them until they go to sleep for the night. There is also no mention of the ward not being visible (see the description for the Shield spell), so I assume it is visible and also does not allow for objects to pass through it. I.e. "bumping into" someone/something could lower it's HP. I know this is all academic, but I just wanted to provide players with the opportunity to have the game automation work more closely to the way the feature is written. Plus this is my first module, and I am still learning Foundry and it's API.
-
-## Features
-
-- **Automatic Detection**: Detects when an actor is a wizard with the Abjurer subclass or the School of Abjuration subclass for 2014
-- **Spell Monitoring**: Automatically detects when Abjuration spells are cast
-- **Smart Healing**: Calculates healing as spell level × 2 and applies it to the ward
-- **Visual Feedback**: Shows ward icon when active (requires DAE and Visual Active Effects) and provides chat notifications for ward activities
-- **User Choice**: Prompts players to create Arcane Ward when casting their first Abjuration spell
-
-## Installation
-
-Like most modules, find it in the module directory in Foundry, or use the manifest url:
-<https://github.com/averagejoe77/arcane-warding/releases/latest/download/module.json> to install manually.
-
-## How It Works
-
-### Arcane Ward Detection
-
-The module automatically detects if an actor is:
-
-- A wizard class character
-- Has the Abjurer subclass or the School of Abjuration
-
-### Spell Casting Monitoring
-
-When a spell is cast, the module:
-
-1. Checks if the caster is an Abjurer wizard or in the School of Abjuration
-2. Determines if the spell is an Abjuration spell
-3. If it's an Abjuration spell, ask if the user would like to create the Arcane Ward if it is not already active
-   1. heal the ward for 2x the spell level is the ward is already active
-
-### Arcane Ward Mechanics
-
-- **Max HP**: Wizard level + Intelligence modifier
-- **Healing**: Spell level × 2 HP restored to the ward when an Abjuraton spell is cast and the ward is active
-- **Overhealing**: "I don't think so Tim." If healing would exceed max HP, only heals up to the maximum
-- **NOT IMPLEMENTED**: Healing the ward by expending a spell slot without casting a spell. Spell slots are "game mechanic" and do not fall into the real of "how would this work if it were real" which is a basic tenent that I have built this on. If I find that users want the feature added or I find that is would be super useful in actual gameplay, I will look at adding it later
-
-### User Interface
-
-- **Token HUD**: You can enable bars on your token and set one of them to the arcane ward's hp value. This bar will be the blue-ish colored one
-- **Chat Notifications**: Displays chat messages on activation, damage absorbed, healing, and long resting, along with some added "flavor" in the messages. If chat bubbles are enabled, you will also get some entertaining responses from the token that is being attacked.
-- **Dialog Prompts**: Asks if player wants to create the ward when casting an Abjuration spell for the first time
-
-## Usage
-
-### Automatic Operation
-
-The module works automatically once enabled. When an Abjurer wizard casts an Abjuration spell:
-
-1. If no Arcane Ward exists, a dialog appears asking if they want to create one
-2. If they choose yes, the ward is created with max HP = wizard level + INT modifier
-3. Subsequent Abjuration spell casts heal the ward for (spell level × 2) HP
-4. A chat message indicates that the ward has been healed or has absorbed damage
-
-### Visual Indicators
-
-- With bars enabled on a token, the blue bar shows current ward health without numeric values
-- When using the D&D5e PHB version of the class feature, the character sheet displays the wards HP as it's uses
-
-## Technical Details
-
-### Spell Detection
-
-The module detects Abjuration spells by checking the spell school property. Compatible with D&D 5e system.
-
-### Internationalization
-
-Currently only English is supported. If you would like to add support for another language, feel free to add a json file for your language to the langs folder and submitt a pull request. I would be happy to have it support other languages and do not trust AI enough to get it right.
-
-Also, there is a section in the language files for "WITTY_MESSAGES". You can add your own messages to the file and the module will automatically use them when the ward absorbs damage. No need to wait for an update to the module to get creative with your own installation. You can also make suggestion in the issues here on github.
-
-### Compatibility
-
-- Foundry VTT v12+
-- D&D 5e system
-- Midi-QOL
-  - In order for the automatic damage to apply to the ward, you must enable `Auto apply damage to target` in the Midi-QOL Configuration -> Workflow -> Damage section of the Midi-QOL confifguration settings.
-- DAE
-- Visual Active Effects
-
-## Support
-
-For issues or questions:
-
-1. Check the browser console for error messages
-2. Verify module compatibility with your Foundry VTT version
-
-## License
-
-This module is provided as-is for use with Foundry VTT. Feel free to modify and distribute as needed.
-
-## Version History
-
-**v1.0.0**: Initial release with basic Arcane Ward functionality
-
-**v1.0.1**: Fixed the module.json for dependencies so they are prompted to be installed if missing
-
-**v1.1.7**: Fixed messaging flag using the wrong flag
-
-**v1.2.7**: Added support for the Projected Ward class feature
-
-**v1.2.9**: Added distance support for v12
-
-**v1.2.10**: Refactor and messaging fixes
-
-**v1.2.13**: Updating the creation of the active effect and the healing when upcasting
-
-**v1.2.17**: Added support for 2014
+针对Arcane Warding模组写死英文物品名判断而无法在中文环境下使用的改版。
+现提供改版后，可以完全配合记忆remix的汉化mod，不需要修改物品及子职添加英文。
+注意：该改版删除了原版的全局嘲讽。
+使用方法：
+1、子职包含“防护师”/“防护学派”/“Abjurer”“School of Abujration”
+2、特性名包含“奥术守御”/“Arcane Warding”
+3、创建/或直接使用phb中的奥术守御特性，配置方法：
+①将奥术守御物品的使用次数改为(2 * @classes.wizard.levels) + @abilities.int.mod，使用次数拉满，设置为长休失去所有使用次数
+②将卡面切换到dnd5e默认物品卡，右上角toggle message点击切换为enabled，再切回tidy物品卡
+③创建一个效用行动名为“Create Ward”←只有这里有英文，不想改了，不需要对行动做任何修改
+④使用phb奥术守御的“为奥术守御消耗法术位”行动拖入该物品，并修改行动时间为附赠动作，注意取消所有行动的“其它行动兼容”
+⑤当升到6级时，创建一个名为“投射守御”的特性，不用添加任何行动←无法自动添加反应
+⑥消耗环位施展一个防护系法术。每长休第一次施展将为奥术守御充满使用次数，之后每次施展为奥术守御恢复2*环位点次数。
+⑦在被伤害时自动扣除使用次数实现减伤，若已开启toggle message则会有提示减伤、充能
