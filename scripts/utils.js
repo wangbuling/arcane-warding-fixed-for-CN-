@@ -65,7 +65,7 @@ function isAbjurerWizard(actor, ABJURER_SUBCLASS) {
  */
 function getArcaneWard(actor) {
 	if(hasArcaneWard(actor)) {
-		return actor.items.find(item => item.type === 'feat' && item.name.includes('Arcane Ward'));
+		return actor.items.find(item => item.type === 'feat' && (item.name.includes('Arcane Ward') || item.name.includes('奥术守御')));
 	}
 	return null;
 }
@@ -77,7 +77,7 @@ function getArcaneWard(actor) {
  * @returns {boolean} - True if the actor has an Arcane Ward, false otherwise
  */
 function hasArcaneWard(actor) {
-	return actor.items.find(item => item.type === 'feat' && item.name.includes('Arcane Ward')) ? true : false;
+	return actor.items.find(item => item.type === 'feat' && (item.name.includes('Arcane Ward') || item.name.includes('奥术守御'))) ? true : false;
 }
 
 /**
@@ -87,10 +87,9 @@ function hasArcaneWard(actor) {
  * @returns {ActiveEffect} - The Arcane Ward effect
  */
 function getArcaneWardEffect(item) {
-	if(hasArcaneWardEffect(item)) {
-		return item.effects.find(effect => effect.name === "Arcane Ward");
-	}
-	return null;
+    // 这里其实可以简化，不用再调 has... 函数了，直接找，找到了就是有，没找到就是 null
+    const effectName = game.i18n.localize('ARCANE_WARDING.EFFECT_NAME'); 
+    return item.effects.find(effect => effect.name === "Arcane Ward" || effect.name === effectName) || null;
 }
 
 /**
@@ -100,7 +99,8 @@ function getArcaneWardEffect(item) {
  * @returns {boolean} - True if the actor has an Arcane Ward effect, false otherwise
  */
 function hasArcaneWardEffect(item) {
-	return item.effects.find(effect => effect.name === "Arcane Ward") ? true : false;
+    const effectName = game.i18n.localize('ARCANE_WARDING.EFFECT_NAME');
+    return item.effects.find(effect => effect.name === "Arcane Ward" || effect.name === effectName) ? true : false;
 }
 
 /**
@@ -127,7 +127,7 @@ function getActorsWithProjectedWard() {
  * @returns {boolean} - True if the actor has the Projected Ward class feature, false otherwise
  */
 function hasProjectedWard(actor) {
-	return actor.items.find(item => item.type === 'feat' && item.name.includes('Projected Ward')) ? true : false;
+	return actor.items.find(item => item.type === 'feat' && (item.name.includes('Projected Ward') || item.name.includes('投射守御'))) ? true : false;
 }
 
 /**

@@ -8,7 +8,7 @@ import { registerSocket, SOCKET_NAME } from './socket.js';
 class ArcaneWarding {
     constructor() {
         this.ABJURATION_SCHOOLS = ['abjuration', 'abj'];
-        this.ABJURER_SUBCLASS = ['Abjurer', 'School of Abjuration'];
+        this.ABJURER_SUBCLASS = ['Abjurer', 'School of Abjuration', '防护学派', '防护师'];
         this.langs = {};
         this.initialize();
     }
@@ -103,13 +103,15 @@ class ArcaneWarding {
                 }
             }
         } else {
-
+            // 这里删除了未命中时的嘲讽逻辑
+            /*
             const sendMsg = workflow._diceRoll === 1 ? true : Math.random() < 0.5 ? true : false;
             
             if(sendMsg) {
                 const msg = generateWittyMessage(targetActor, attacker, "firstPerson");
                 sendMessage(msg, targetActor, "emote", true);
             }
+            */
         }
         return true;
     }
@@ -161,6 +163,8 @@ class ArcaneWarding {
             }
 
             if(remainingDamage === 0) {
+                // 已禁用投射结界完全吸收伤害时的俏皮话
+                /*
                 // generate a random message for the target to say to the actor (or the attacker)
                 let scope = Math.random() < 0.5 ? "attacker" : "actor";
                 
@@ -169,6 +173,7 @@ class ArcaneWarding {
                 if(useFullMessaging(actor)) {
                     sendMessage(wittyPWMessage, target, "emote", true);
                 }
+                */
             }
 
             return true;
@@ -186,7 +191,7 @@ class ArcaneWarding {
         const $html = $(html);
 
         const item = data.item;
-        if (!item || item.name !== 'Arcane Ward') return;
+        if (!item || (!item.name.includes('Arcane Ward') && !item.name.includes('奥术守御'))) return;
 
         // Ensure the flag is present
         if (item.flags?.arcaneWarding?.fullMessaging === undefined) {
@@ -399,13 +404,14 @@ class ArcaneWarding {
         }
 
         if (remainingDamage === 0) {
-
+             // 已禁用自身结界完全吸收伤害时的俏皮话
+             /*
             // determine the scope of the message
             const scope = Math.random() < 0.5 ? "firstPerson" : "thirdPerson";
 
             // generate the witty message based on the scope
             let wittyMessage = generateWittyMessage(actor, attacker, scope);
-
+            
             // defaults for type of message and if we should use a bubble
             let useBubble = false;
             let type = "publicroll";
@@ -419,6 +425,7 @@ class ArcaneWarding {
             if(useFullMessaging(actor)) {
                 sendMessage(wittyMessage, actor, type, useBubble);
             }
+            */
         }
         
         return true;
